@@ -27,6 +27,7 @@ public class Main {
         scanner.close();
         Document doc  = validateUrl(url);
         if(doc != null){
+
             System.out.println(" ");
             System.out.println("Number of lines: " +  doc.html().split("\n").length);
             System.out.println(" ");
