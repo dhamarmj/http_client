@@ -1,40 +1,33 @@
 package edu.dhamarmj;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.*;
-import org.apache.http.client.utils.*;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.jsoup.*;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import javax.xml.bind.SchemaOutputResolver;
 import java.io.IOException;
-import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
+
 public class Main {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception{
 
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Introduzca un URL: " );
-        String url = scanner.next();
-        scanner.close();
-        Document doc  = validateUrl(url);
-        if(doc != null){
-
+//        Scanner scanner = new Scanner(System.in);
+//        System.out.print("Introduzca un URL: " );
+//        String url = scanner.next();
+//        scanner.close();
+        String url="http://itachi.avathartech.com:4567/opcion2.html";
+        Connection.Response connect = validateUrl(url);
+        if(connect != null){
             System.out.println(" ");
-            System.out.println("Number of lines: " +  doc.html().split("\n").length);
+            System.out.println("Number of lines: " + connect.body().split("\n").length);
             System.out.println(" ");
+            Document doc = connect.parse();
             Elements para = doc.getElementsByTag("p");
             System.out.println("Number of paragraphs: "+ para.size());
             System.out.println(" ");
-            Elements images = doc.select("img > p");
+            Elements images = doc.select("p img");
             System.out.println("Images inside a paragraph: "+ images.size());
             System.out.println(" ");
             Elements forms = doc.select("form[method$=post],form[method$=get]");
@@ -56,10 +49,10 @@ public class Main {
             System.out.println("Wrong URL");
     }
 
-    private static Document validateUrl(String url) throws IOException {
-        Document doc;
+    private static Connection.Response validateUrl(String url) throws IOException {
+        Connection.Response doc;
         try{
-            doc = Jsoup.connect(url).get();
+            doc = Jsoup.connect(url).execute();
             return doc;
         }
         catch (IllegalArgumentException e){
@@ -76,6 +69,6 @@ public class Main {
             Document document1 = Jsoup.connect(dir)
                     .data("asignatura","practica1")
                     .header("matricula","20140047").post();
-            System.out.println(document1.title());
+            System.out.println(document1.body());
     }
 }
